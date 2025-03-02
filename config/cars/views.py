@@ -66,4 +66,57 @@ def user_logout(request):
     return redirect("home")
 
 
+from .models import Car, Brand, Color
+
+
+def car_list(request):
+    brand_id = request.GET.get('brand')
+    color_id = request.GET.get('color')
+
+    cars = Car.objects.all()
+
+    if brand_id:
+        cars = cars.filter(brand_id=brand_id)
+    if color_id:
+        cars = cars.filter(color_id=color_id)
+
+    brands = Brand.objects.all()
+    colors = Color.objects.all()
+
+    return render(request, 'car_list.html', {'cars': cars, 'brands': brands, 'colors': colors})
+
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from .models import Car, Like
+
+
+def toggle_like(request, car_id):
+    car = get_object_or_404(Car, id=car_id)
+
+    if request.user.is_authenticated:
+        like, created = Like.objects.get_or_create(car=car, user=request.user)
+        if not created:
+            like.delete()
+            return JsonResponse({'liked': False, 'likes_count': car.likes.count()})
+        return JsonResponse({'liked': True, 'likes_count': car.likes.count()})
+
+    return JsonResponse({'error': 'Not authenticated'}, status=403)
+
+
+from django.shortcuts import redirect
+from .forms import CarForm
+
+
+def add_car(request):
+    if request.method == "POST":
+        form = CarForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('car_list')
+    else:
+        form = CarForm()
+
+    return render(request, 'add_car.html', {'form': form})
+
 # Create your views here.

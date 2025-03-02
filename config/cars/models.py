@@ -36,5 +36,17 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.car.name}"
+class Like(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('car', 'user')
+class Car(models.Model):
+    name = models.CharField(max_length=100)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    color = models.ForeignKey(Color, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='cars/', null=True, blank=True)
 
 # Create your models here.

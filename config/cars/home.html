@@ -5,3 +5,55 @@
     {% endfor %}
 </ul>
 <a href="{% url 'login' %}">Войти</a> | <a href="{% url 'register' %}">Регистрация</a>
+<form method="get">
+    <select name="brand">
+        <option value="">Выберите бренд</option>
+        {% for brand in brands %}
+        <option value="{{ brand.id }}">{{ brand.name }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="color">
+        <option value="">Выберите цвет</option>
+        {% for color in colors %}
+        <option value="{{ color.id }}">{{ color.name }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Фильтровать</button>
+</form>
+
+<ul>
+    {% for car in cars %}
+    <li>{{ car.name }} - {{ car.brand.name }} - {{ car.color.name }}</li>
+    {% endfor %}
+</ul>
+<script>
+function toggleLike(carId) {
+    fetch(`/cars/${carId}/like/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.liked) {
+                document.getElementById(`like-${carId}`).textContent = '❤️ ' + data.likes_count;
+            } else {
+                document.getElementById(`like-${carId}`).textContent = '🤍 ' + data.likes_count;
+            }
+        });
+}
+</script>
+
+<ul>
+    {% for car in cars %}
+    <li>
+        {{ car.name }} - {{ car.brand.name }} - {{ car.color.name }}
+        <button id="like-{{ car.id }}" onclick="toggleLike({{ car.id }})">
+            🤍 {{ car.likes.count }}
+        </button>
+    </li>
+    {% endfor %}
+</ul>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Добавить машину</button>
+</form>
