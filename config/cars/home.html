@@ -1,0 +1,7 @@
+<h1>Добро пожаловать!</h1>
+<ul>
+    {% for car in cars %}
+        <li><a href="{% url 'car_detail' car.id %}">{{ car.name }}</a></li>
+    {% endfor %}
+</ul>
+<a href="{% url 'login' %}">Войти</a> | <a href="{% url 'register' %}">Регистрация</a>
