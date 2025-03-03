@@ -119,4 +119,37 @@ def add_car(request):
 
     return render(request, 'add_car.html', {'form': form})
 
+from django.views.generic import ListView, DetailView, CreateView, DeleteView
+from django.urls import reverse_lazy
+from .models import Lesson
+
+class LessonListView(ListView):
+    model = Lesson
+    template_name = 'lesson_list.html'  # Sahifa shabloni
+    context_object_name = 'lessons'  # Template-da foydalaniladigan o'zgaruvchi nomi
+class LessonDetailView(DetailView):
+    model = Lesson
+    template_name = 'lesson_detail.html'
+    context_object_name = 'lesson'
+class LessonCreateView(CreateView):
+    model = Lesson
+    template_name = 'lesson_form.html'
+    fields = ['title', 'description']
+    success_url = reverse_lazy('lesson_list')  # Qo'shgandan keyin qaytish sahifasi
+class LessonDeleteView(DeleteView):
+    model = Lesson
+    template_name = 'lesson_confirm_delete.html'
+    success_url = reverse_lazy('lesson_list')
+from django.views import View
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
+class LessonUpdateView(View):
+    def post(self, request, pk):
+        lesson = get_object_or_404(Lesson, pk=pk)
+        lesson.title = request.POST.get('title', lesson.title)
+        lesson.description = request.POST.get('description', lesson.description)
+        lesson.save()
+        return JsonResponse({'message': 'Lesson updated successfully'})
+
 # Create your views here.

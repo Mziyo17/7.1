@@ -14,12 +14,23 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
+
 from django.contrib import admin
 from django.urls import path, include
-
+from django.urls import path
+from .views import (
+    LessonListView,
+    LessonDetailView,
+    LessonCreateView,
+    LessonDeleteView,
+    LessonUpdateView
+)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('cars.urls')),  # Подключаем маршруты из приложения cars
+    path('lessons/', LessonListView.as_view(), name='lesson_list'),
+    path('lessons/<int:pk>/', LessonDetailView.as_view(), name='lesson_detail'),
+    path('lessons/create/', LessonCreateView.as_view(), name='lesson_create'),
+    path('lessons/<int:pk>/delete/', LessonDeleteView.as_view(), name='lesson_delete'),
+    path('lessons/<int:pk>/update/', LessonUpdateView.as_view(), name='lesson_update'),
 ]
