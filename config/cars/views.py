@@ -151,5 +151,53 @@ class LessonUpdateView(View):
         lesson.description = request.POST.get('description', lesson.description)
         lesson.save()
         return JsonResponse({'message': 'Lesson updated successfully'})
+from django.urls import reverse_lazy
+from django.views.generic.edit import UpdateView
+from .models import Car
+
+class CarUpdateView(UpdateView):
+    model = Car
+    fields = ['name', 'brand', 'color']
+    template_name = 'car_update.html'
+    success_url = reverse_lazy('car_list')
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'category_list.html'
+class CategoryCreateView(CreateView):
+    model = Category
+    fields = ['name']
+    template_name = 'category_form.html'
+    success_url = reverse_lazy('category_list')
+class CategoryUpdateView(UpdateView):
+    model = Category
+    fields = ['name']
+    template_name = 'category_form.html'
+    success_url = reverse_lazy('category_list')
+class CategoryDeleteView(DeleteView):
+    model = Category
+    template_name = 'category_confirm_delete.html'
+    success_url = reverse_lazy('category_list')
+
+
+from django.db.models import Q
+
+
+class CarListView(ListView):
+    model = Car
+    template_name = 'car_list.html'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Car.objects.filter(Q(name__icontains=query) | Q(brand__name__icontains=query))
+        return Car.objects.all()
+from django.core.paginator import Paginator
+
+class CarListView(ListView):
+    model = Car
+    template_name = 'car_list.html'
+    paginate_by = 5  # 5 машин на страницу
 
 # Create your views here.

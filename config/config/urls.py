@@ -25,6 +25,9 @@ from .views import (
     LessonDeleteView,
     LessonUpdateView
 )
+from django.urls import path
+from .views import CarUpdateView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('cars.urls')),  # Подключаем маршруты из приложения cars
@@ -33,4 +36,10 @@ urlpatterns = [
     path('lessons/create/', LessonCreateView.as_view(), name='lesson_create'),
     path('lessons/<int:pk>/delete/', LessonDeleteView.as_view(), name='lesson_delete'),
     path('lessons/<int:pk>/update/', LessonUpdateView.as_view(), name='lesson_update'),
+    path('car/update/<int:pk>/', CarUpdateView.as_view(), name='car_update'),
+    path('categories/', CategoryListView.as_view(), name='category_list'),
+    path('category/<int:pk>/', CategoryDetailView.as_view(), name='category_detail'),
+    path('category/create/', CategoryCreateView.as_view(), name='category_create'),
+    path('category/update/<int:pk>/', CategoryUpdateView.as_view(), name='category_update'),
+    path('category/delete/<int:pk>/', CategoryDeleteView.as_view(), name='category_delete'),
 ]

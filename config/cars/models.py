@@ -48,5 +48,10 @@ class Car(models.Model):
     color = models.ForeignKey(Color, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='cars/', null=True, blank=True)
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 # Create your models here.
