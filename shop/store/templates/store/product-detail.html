@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }}</title>
+</head>
+<body>
+    <h1>{{ product.name }}</h1>
+    <p>{{ product.description }}</p>
+    <p>Цена: {{ product.price }} ₽</p>
+    <img src="{{ product.image.url }}" width="300">
+
+    <h3>Оформить заказ:</h3>
+    <form method="post" action="{% url 'order' %}">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <label>Имя:</label><br>
+        <input type="text" name="customer_name" required><br>
+        <label>Email:</label><br>
+        <input type="email" name="customer_email" required><br>
+        <label>Количество:</label><br>
+        <input type="number" name="quantity" min="1" value="1"><br><br>
+        <button type="submit">Оформить заказ</button>
+    </form>
+
+    <p><a href="{% url 'home' %}">Назад к товарам</a></p>
+</body>
+</html>
